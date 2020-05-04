@@ -61,5 +61,8 @@
         <item>Vietnamese, Vietnam</item>
     </string-array>
 
-    <string name="text">&#160;&#160;Text :</string>
+    <string name="text_text">&#160;&#160;Text :</string>
+    <string name="text_pinch">Pinch</string>
+    <string name="text_no_text">There is no text</string>
+
 </resources>

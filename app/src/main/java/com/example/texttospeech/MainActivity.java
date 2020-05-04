@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,11 +18,19 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity{
 
+    // ImageViews of fast and slow sound
     private ImageView mImageViewFast, mImageViewSlow;
+
+    // EditText with TTS
     private EditText mEditText;
+
+    // Spinner with languages
     private Spinner mSpinner;
+
+    // SeekBar with pitch
     private SeekBar mSeekBar;
 
+    // Object TTS
     private TextToSpeech mTTS;
 
     @Override
@@ -34,18 +41,22 @@ public class MainActivity extends AppCompatActivity{
         mImageViewFast = findViewById(R.id.mImageViewFast);
         mImageViewSlow = findViewById(R.id.mImageViewSlow);
         mSpinner = findViewById(R.id.mSpinner);
-
         mEditText = findViewById(R.id.mEditText);
+        mSeekBar = findViewById(R.id.mSeekBar);
 
         mTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
+                // Set English as first language
                 mTTS.setLanguage(Locale.ENGLISH);
+
+                // TODO : Check for succesful uploading TTS
                 if (status == TextToSpeech.SUCCESS)
                 {
                     if ((mTTS.setLanguage(Locale.ENGLISH) == TextToSpeech.LANG_MISSING_DATA) || (mTTS.setLanguage(Locale.ENGLISH) == TextToSpeech.LANG_NOT_SUPPORTED))
                         Log.d("TTS", "Language not supported");
                     else {
+                        // Enanle ImageViews
                         mImageViewFast.setEnabled(true);
                         mImageViewSlow.setEnabled(true);
                     }
@@ -55,10 +66,10 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        mSeekBar = findViewById(R.id.mSeekBar);
-
+        // Set 1 for first pitch
         mTTS.setPitch((float) 1);
 
+        // TODO : Lifecycle of SeekBar
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -77,6 +88,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        // Initialization of Spinner
         ArrayAdapter<?> adapter = ArrayAdapter.createFromResource(this, R.array.languages, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(adapter);
@@ -93,6 +105,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        // Press on ImageView with fast speechrate
         mImageViewFast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,6 +113,8 @@ public class MainActivity extends AppCompatActivity{
                 speakText();
             }
         });
+
+        // Press on ImageView with slow speechrate
         mImageViewSlow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,6 +124,7 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
+    // TODO : Method to choose language with Spinner
     public String chooseLanguage(String language) {
         switch (language) {
             case "English, US":
@@ -229,12 +245,15 @@ public class MainActivity extends AppCompatActivity{
                 return "";
         }
     }
+
+    // TODO : Method to speak text from EditText
     public void speakText() {
+        // If thre is text in EditText
         if (mEditText.getText().toString() != null) {
             mTTS.speak(mEditText.getText().toString(), TextToSpeech.QUEUE_FLUSH, null);
         }
         else {
-            Toast.makeText(this, "There is no text", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.text_no_text), Toast.LENGTH_LONG).show();
             Log.d("TTS", "No text");
         }
     }
